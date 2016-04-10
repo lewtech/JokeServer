@@ -5,7 +5,9 @@ import java.net.Socket;
 public class JokeClient {
 	public static void main (String args[]){
 		String serverName;
-		String userName;
+		String userName = "";
+		boolean nameEntered = false;
+		
 		if (args.length < 1) serverName = "localhost";
 		else serverName = args[0];
 		System.out.println("JokeClient");
@@ -18,6 +20,14 @@ public class JokeClient {
 		 ("Enter your name, (quit) to end: ");
 		 System.out.flush ();
 		 name = in.readLine ();
+		 if (nameEntered){ 
+			 name = userName;
+		 }else if (userName=="" && nameEntered==false){
+			 userName = name;
+			 nameEntered = true;
+		 }else {
+			 nameEntered = true;
+		 }
 		 if (name.indexOf("quit") < 0)
 		 getRemoteAddress(name, serverName);
 		 } while (name.indexOf("quit") < 0); // quitSmoking.com?
