@@ -11,12 +11,14 @@ class Worker extends Thread{
 	Worker (ServerSocket s){serverSock = s;}
 	boolean isRunning = false;
 	
+	//setup arrays of jokes, proverbs, and maintenance messages
 	String jokes[] = {"A Joke one here...HAHA", "B Why did the Chicken Cross the road...hahaha", "C Knock Knock, Who's There?", "D Joke 4", "E Joke5"};
 	String proverbs[] = {"A Proverb: Chase two rabbits, catch none","B Proverb: 1 Bird in the Hand is Better than 2 in the Bush", "C PRoverb", "D Proverb", "E Proverb"};
+	String maintenances[] = {"Maintenance: Sorry System is Down","Maintenance: Try again in 5000 minutes", "Maintenance: Out to lunch", "Maintenance: Hamsters ran out of steam.", "Maintenance: Installing 23 of 2347 updates"};
+	//enum modes of the server
 	public enum Mode { JOKE, PROVERB, MAINTENANCE, SHUTDOWN}
-	String testMode ="Joke";
-	String output = "";
-	Mode mode = Mode.JOKE;
+	String output = ""; //initialize output string
+	Mode mode = Mode.JOKE; //set defualt mode to JOKEMode
 
 
 	
@@ -65,18 +67,20 @@ class Worker extends Thread{
 	private void processRequest ( PrintStream out, String name){
 		switch (mode){
 		case JOKE:
-			out.println("Jokemode");
+			out.println("Jokemode ");
 			sendJoke(out,name);
 			break;
 		case PROVERB:
-			out.println("ProverbMode");
+			out.println("ProverbMode ");
 			sendProverb(out, name);
 			break;
 		case MAINTENANCE:
-			out.println("MaintenanceMode");
+			out.println("MaintenanceMode ");
+			sendMaintenance(out, name);
 			break;
 		case SHUTDOWN:
 			out.println("ShutdownMode");
+			out.println("Shutting down Server...");
 			stopListening();
 			break;
 		
@@ -92,6 +96,15 @@ class Worker extends Thread{
 
 		output = jokes[randomInt];
 		out.println( name+" "+ output);
+	}
+	
+	private void sendMaintenance( PrintStream out, String name) {
+		// TODO Auto-generated method stub
+		Random randomNumberGenerator = new Random();
+		int randomInt = randomNumberGenerator.nextInt(4);
+
+		output = maintenances[randomInt];
+		out.println(output);
 	}
 	
 	private void sendProverb( PrintStream out, String name) {
@@ -115,6 +128,7 @@ class Worker extends Thread{
 		return results;
 	}
 	
+	//shutdown server
 	public void stopListening() {
 		try {
 			this.serverSock.close();
@@ -125,6 +139,7 @@ class Worker extends Thread{
 		}
 	}
 	
+	//force thread to continue running so that it doesn't die
 	public void start() {
 		if(!isRunning) {
 			isRunning = true;
@@ -158,9 +173,10 @@ public static class JokeServer {
 		ServerSocket servsock = new ServerSocket (port, q_len);
 		Worker worker = new Worker(servsock);
 		
-		System.out.println("Lew Flauta's JokeServer Starting up ver 0.1, listening at port:" + port);
+		System.out.println("Lew Flauta's JokeServer Starting up ver 0.8, listening at port:" + port);
 		while (worker.listen()){ //run loop for the server
 			worker.start();
+			//moved the thread out of this loop, because each reconnection it was spawning a new thread, and losing the state of the worker thread.
 			//sock = servsock.accept(); //wait for the next client connection
 			//new Worker(sock).start(); //spawn worker to handle it
 			//servsock.close();
