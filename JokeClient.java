@@ -15,7 +15,7 @@ public class JokeClient {
 		 String name;
 		 do {
 		 System.out.print
-		 ("Enter a hostname or an IP address, (quit) to end: ");
+		 ("Enter a JOKE, PROVERB, MAINTENANCE, SHUTDOWN or your name, (quit) to end: ");
 		 System.out.flush ();
 		 name = in.readLine ();
 		 if (name.indexOf("quit") < 0)
