@@ -34,7 +34,7 @@ public class JokeClientAdmin {
 
 		 try{
 		 /* Open our connection to server port, choose your own port number.. */
-		 sock = new Socket(serverName, 8888);
+		 sock = new Socket(serverName, 9999);
 
 		 // Create filter I/O streams for the socket:
 		 fromServer =

@@ -4,11 +4,11 @@ import java.util.Random;
 
 import org.omg.CORBA.portable.UnknownException;
 
-class Worker extends Thread{
+class JokeWorker extends Thread{
 	private static final Boolean True = null;
 	ServerSocket serverSock;
 	Socket sock;
-	Worker (ServerSocket s){serverSock = s;}
+	JokeWorker (ServerSocket s){serverSock = s;}
 	boolean isRunning = false;
 	
 	//setup arrays of jokes, proverbs, and maintenance messages
@@ -159,34 +159,33 @@ static String toText(byte ip[] ) { //make portable for 128 bit format
 	// TODO Auto-generated method stub
 	return result.toString();
 }
+}
 
-
-public static class JokeServer {
-
+public class JokeServer {
 	public static void main(String a[])throws IOException {
 		// TODO Auto-generated method stub
-
 		int q_len = 6; //not interesting. number of requests for opsys to queue
 		int port = 8888;
+		int portAdmin = 9999;
 		Socket sock;
 		//Boolean run = True;
 		ServerSocket servsock = new ServerSocket (port, q_len);
-		Worker worker = new Worker(servsock);
+		ServerSocket servsockAdmin = new ServerSocket (portAdmin, q_len);
+		JokeWorker jokeWorker = new JokeWorker(servsock);
+		JokeWorker adminWorker = new JokeWorker(servsockAdmin);
 		
 		System.out.println("Lew Flauta's JokeServer Starting up ver 0.8, listening at port:" + port);
-		while (worker.listen()){ //run loop for the server
-			worker.start();
+		while (jokeWorker.listen()){ //run loop for the server
+			jokeWorker.start();
+			adminWorker.start();
 			//moved the thread out of this loop, because each reconnection it was spawning a new thread, and losing the state of the worker thread.
 			//sock = servsock.accept(); //wait for the next client connection
 			//new Worker(sock).start(); //spawn worker to handle it
 			//servsock.close();
 		}
-		worker.stopListening();
-		
-		
+		jokeWorker.stopListening();
 	}
-
-
-
 }
-}
+
+
+
