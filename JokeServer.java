@@ -171,9 +171,12 @@ public class JokeServer {
 		Socket sock;
 		//Boolean run = True;
 		ServerSocket servsock = new ServerSocket (port, q_len);
-		ServerSocket servsockAdmin = new ServerSocket (portAdmin, q_len);
+		//ServerSocket servsockAdmin = new ServerSocket (portAdmin, q_len);
 		JokeWorker jokeWorker = new JokeWorker(servsock);
-		JokeWorker adminWorker = new JokeWorker(servsockAdmin);
+		//JokeWorker adminWorker = new JokeWorker(servsockAdmin);
+		AdminLooper AL = new AdminLooper();
+		Thread t = new Thread(AL);
+			t.start();
 		
 		System.out.println("Lew Flauta's JokeServer Starting up ver 0.8, listening at port:" + port);
 		while (jokeWorker.listen()){ //run loop for the server
@@ -197,7 +200,7 @@ public class JokeServer {
 		private static final Boolean True = null;
 		ServerSocket serverSock;
 		Socket sock;
-		AdminWorker (ServerSocket s){serverSock = s;}
+		AdminWorker (Socket s){sock = s;}
 		boolean isRunning = false;
 		
 		//setup arrays of jokes, proverbs, and maintenance messages
@@ -358,7 +361,7 @@ public class JokeServer {
 		    System.out.println("In the admin looper thread");
 		    
 		    int q_len = 6; /* Number of requests for OpSys to queue */
-		    int port = 9000;  // We are listening at a different port for Admin clients
+		    int port = 9999;  // We are listening at a different port for Admin clients
 		    Socket sock;
 
 		    try{
@@ -366,7 +369,7 @@ public class JokeServer {
 		      while (adminControlSwitch) {
 				// wait for the next ADMIN client connection:
 				sock = servsock.accept();
-	//****			new AdminWorker (sock).start(); 
+				new AdminWorker (sock).start(); 
 		      }
 		      servsock.close();
 		    }catch (IOException ioe) {System.out.println(ioe);}
