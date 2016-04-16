@@ -31,10 +31,10 @@ public class JokeClientAdmin {
 		 BufferedReader fromServer;
 		 PrintStream toServer;
 		 String textFromServer;
-
+		 int port = 8888;
 		 try{
 		 /* Open our connection to server port, choose your own port number.. */
-		 sock = new Socket(serverName, 9999);
+		 sock = new Socket(serverName, port);
 
 		 // Create filter I/O streams for the socket:
 		 fromServer =
