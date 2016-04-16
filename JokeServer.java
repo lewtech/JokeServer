@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Random;
 
+import javax.print.DocFlavor.STRING;
+
 import org.omg.CORBA.portable.UnknownException;
 
 class JokeWorker extends Thread{
@@ -149,6 +151,10 @@ class JokeWorker extends Thread{
 			this.run();
 		}
 	}
+	
+	public void setFromAdmin(STRING name){
+		
+	}
 
 //not interesting to us:
 static String toText(byte ip[] ) { //make portable for 128 bit format
@@ -204,9 +210,7 @@ public class JokeServer {
 		boolean isRunning = false;
 		
 		//setup arrays of jokes, proverbs, and maintenance messages
-		String jokes[] = {"A Joke one here...HAHA", "B Why did the Chicken Cross the road...hahaha", "C Knock Knock, Who's There?", "D Joke 4", "E Joke5"};
-		String proverbs[] = {"A Proverb: Chase two rabbits, catch none","B Proverb: 1 Bird in the Hand is Better than 2 in the Bush", "C PRoverb", "D Proverb", "E Proverb"};
-		String maintenances[] = {"Maintenance: Sorry System is Down","Maintenance: Try again in 5000 minutes", "Maintenance: Out to lunch", "Maintenance: Hamsters ran out of steam.", "Maintenance: Installing 23 of 2347 updates"};
+		
 		//enum modes of the server
 		public enum Mode { JOKE, PROVERB, MAINTENANCE, SHUTDOWN}
 		String output = ""; //initialize output string
@@ -232,7 +236,8 @@ public class JokeServer {
 					processRequest( out, name);
 					
 					if (!setModeFromRequest(name, out)){ //if doesn't get set, process request
-						processRequest( out, name);
+						//processRequest( out, name);
+						
 					}
 					
 				} catch (IOException x){
@@ -256,23 +261,48 @@ public class JokeServer {
 			return result;
 		}
 		
+		private static void sendMode(String name, String serverName) {
+			// TODO Auto-generated method stub
+			 Socket sock;
+			 BufferedReader fromServer;
+			 PrintStream toServer;
+			 String textFromServer;
+			 int port = 8888;
+			 try{
+			 /* Open our connection to server port, choose your own port number.. */
+			 sock = new Socket(serverName, port);
+
+			 // Create filter I/O streams for the socket:
+			 fromServer =
+			 new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			 toServer = new PrintStream(sock.getOutputStream());
+			 // Send machine name or IP address to server:
+			 toServer.println(name); toServer.flush();
+			 }catch (IOException x) {
+				 System.out.println ("Socket error.");
+				 x.printStackTrace ();
+				 }}
+		
 		private void processRequest ( PrintStream out, String name){
 			switch (mode){
 			case JOKE:
-				out.println("Jokemode ");
-				sendJoke(out,name);
+				out.println("AdminJokemode ");
+				//sendJoke(out,name);
+				toJokeWorker("PROVERB", "127.0.0.1");
 				break;
 			case PROVERB:
-				out.println("ProverbMode ");
-				sendProverb(out, name);
+				out.println("AdminProverbMode ");
+				//toJokeWorker("PROVERB", "localhost");
+				//sendProverb(out, name);
+				
 				break;
 			case MAINTENANCE:
-				out.println("MaintenanceMode ");
-				sendMaintenance(out, name);
+				out.println("AdminMaintenanceMode ");
+				//sendMaintenance(out, name);
 				break;
 			case SHUTDOWN:
-				out.println("ShutdownMode");
-				out.println("Shutting down Server...");
+				out.println("AdminShutdownMode");
+				//out.println("Shutting down Server...");
 				stopListening();
 				break;
 			
@@ -286,7 +316,7 @@ public class JokeServer {
 			Random randomNumberGenerator = new Random();
 			int randomInt = randomNumberGenerator.nextInt(4);
 
-			output = jokes[randomInt];
+//			output = jokes[randomInt];
 			out.println( name+" "+ output);
 		}
 		
@@ -295,7 +325,7 @@ public class JokeServer {
 			Random randomNumberGenerator = new Random();
 			int randomInt = randomNumberGenerator.nextInt(4);
 
-			output = maintenances[randomInt];
+//			output = maintenances[randomInt];
 			out.println(output);
 		}
 		
@@ -304,7 +334,7 @@ public class JokeServer {
 			Random randomNumberGenerator = new Random();
 			int randomInt = randomNumberGenerator.nextInt(4);
 
-			output = proverbs[randomInt];
+//			output = proverbs[randomInt];
 			out.println( name+" "+ output);
 		}
 		
@@ -351,6 +381,38 @@ public class JokeServer {
 		// TODO Auto-generated method stub
 		return result.toString();
 	}
+	
+	private static void toJokeWorker(String name, String serverName) {
+		// TODO Auto-generated method stub
+		
+		 Socket sock;
+		 BufferedReader fromServer;
+		 PrintStream toServer;
+		 String textFromServer;
+		 int port = 8888;
+		 try{
+		 /* Open our connection to server port, choose your own port number.. */
+		 sock = new Socket(serverName, port);
+		 //System.out.println("**** adminClient ****" + name + " " + serverName);
+		 // Create filter I/O streams for the socket:
+		 fromServer =
+		 new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		 toServer = new PrintStream(sock.getOutputStream());
+		 // Send machine name or IP address to server:
+		 toServer.println(name); toServer.flush();
+
+		 // Read two or three lines of response from the server,
+		 // and block while synchronously waiting:
+		 for (int i = 1; i <=3; i++){
+		 textFromServer = fromServer.readLine();
+		 if (textFromServer != null) System.out.println(textFromServer);
+		 }
+		 sock.close();
+		 } catch (IOException x) {
+		 System.out.println ("Socket error.");
+		 x.printStackTrace ();
+		 }
+		 }
 	}
 	
 	//runs in a separate thread and opens socket for listening to the JokeAdminClient
@@ -375,6 +437,7 @@ public class JokeServer {
 		    }catch (IOException ioe) {System.out.println(ioe);}
 		 }
 	}
+	
 
 
 

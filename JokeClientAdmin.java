@@ -9,7 +9,7 @@ public class JokeClientAdmin {
 		if (args.length < 1) serverName = "localhost";
 		else serverName = args[0];
 		System.out.println("JokeClient");
-		System.out.println("Using server: " + serverName + ", Port: 8888");
+		System.out.println("Using server: " + serverName + ", Port: 9999");
 		 BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		 try {
 		 String name;
@@ -27,15 +27,16 @@ public class JokeClientAdmin {
 
 	private static void getRemoteAddress(String name, String serverName) {
 		// TODO Auto-generated method stub
+		
 		 Socket sock;
 		 BufferedReader fromServer;
 		 PrintStream toServer;
 		 String textFromServer;
-		 int port = 8888;
+		 int port = 9999;
 		 try{
 		 /* Open our connection to server port, choose your own port number.. */
 		 sock = new Socket(serverName, port);
-
+		 //System.out.println("**** adminClient ****" + name + " " + serverName);
 		 // Create filter I/O streams for the socket:
 		 fromServer =
 		 new BufferedReader(new InputStreamReader(sock.getInputStream()));
