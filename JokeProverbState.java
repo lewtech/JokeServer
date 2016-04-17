@@ -27,13 +27,18 @@ public class JokeProverbState {
 		proverb4=false;
 		proverb5=false;
 	}
-	public void setName(String name){
-		if (name != this.name){
-			name = this.name;
-			clearJokes();
-			clearProverbs();
-			}
+	public void setName(String sentName){
+//		if (!name.equals(sentName)){
+//			clearJokes();
+//			clearProverbs();
+//		}
+		name = sentName;
 		}
+	
+	public String getName(){
+		return name;
+		}
+	
 	public void clearProverbs() {
 		// TODO Auto-generated method stub
 		proverb1=false;
@@ -64,13 +69,23 @@ public class JokeProverbState {
 	public void setProverb4(boolean proverbSent){proverb4 = proverbSent;}
 	public void setProverb5(boolean proverbSent){proverb5 = proverbSent;}
 	
+	public boolean getJoke1(){return joke1;}
+	public boolean getJoke2(){return joke2;}
+	public boolean getJoke3(){return joke3;}
+	public boolean getJoke4(){return joke4;}
+	public boolean getJoke5(){return joke5;}
+	
 	
 	public boolean checkIfJokesComplete(){
-		return (joke1 && joke2 && joke3 && joke4 && joke5);
+		return (joke1 && joke2 && joke3 && joke4 && joke5 && true);
 	}
 	
 	public boolean checkIfProverbsComplete(){
-		return (proverb1 && proverb2 && proverb3 && proverb4 && proverb5);
+		return (proverb1 && proverb2 && proverb3 && proverb4 && proverb5 && true);
+	}
+	
+	public String toString(){
+		return getName();
 	}
 
 

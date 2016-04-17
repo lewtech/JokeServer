@@ -14,11 +14,14 @@ class JokeWorker extends Thread{
 	Socket sock;
 	JokeWorker (ServerSocket s){serverSock = s;}
 	boolean isRunning = false;
-	JokeProverbState jokeProverbState1 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	
+	JokeProverbState jokeProverbState1 = new JokeProverbState("", false, false, false, false, false, false, false, false, false, false);
 	JokeProverbState jokeProverbState2 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
 	JokeProverbState jokeProverbState3 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
 	JokeProverbState jokeProverbState4 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
 	JokeProverbState jokeProverbState5 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+
+
 	
 	//setup arrays of jokes, proverbs, and maintenance messages
 	String jokes[] = {"A Joke one here...HAHA", "B Why did the Chicken Cross the road...hahaha", "C Knock Knock, Who's There?", "D Joke 4", "E Joke5"};
@@ -60,6 +63,27 @@ class JokeWorker extends Thread{
 			} catch (IOException ioe) {System.out.println(ioe);}
 			}
 	
+	
+	
+	private JokeProverbState checkForState (String name) {
+//		System.out.println("checking state");
+//		if (jokeProverbState1 == null){
+//			jokeProverbState1.setName(name);
+//			System.out.println("assigning name to jokeproverbstate1 " + name);
+//			return jokeProverbState1;
+//		} else if (name.equals(jokeProverbState1.getName())){
+//		return jokeProverbState1;
+//		} else if (name.equals(jokeProverbState2.getName())){
+//			return jokeProverbState2;	
+//		} else if (name.equals(jokeProverbState3.getName())){
+//			return jokeProverbState3;
+//		} else if (name.equals(jokeProverbState4.getName())){
+//			return jokeProverbState4;
+//		}
+//		return jokeProverbState5;
+	return jokeProverbState1;
+	}
+	
 	private boolean setModeFromRequest (String mode, PrintStream out){
 		boolean result = false;
 		try {
@@ -100,10 +124,14 @@ class JokeWorker extends Thread{
 	
 	private void sendJoke( PrintStream out, String name) {
 		// TODO Auto-generated method stub
+		System.out.println(checkForState(name).toString());
 		Random randomNumberGenerator = new Random();
 		int randomInt = randomNumberGenerator.nextInt(4);
-		jokeProverbState1.setJoke1(true);
 		jokeProverbState1.setName(name);
+		System.out.println("joke1 " + jokeProverbState1.getJoke1());
+		System.out.println(jokeProverbState1.getName());
+		jokeProverbState1.setJoke1(true);
+		System.out.println("joke1 " + jokeProverbState1.getJoke1());
 		output = jokes[randomInt];
 		out.println( name+" "+ output);
 	}
@@ -185,6 +213,8 @@ public class JokeServer {
 		int port = 8888;
 		int portAdmin = 9999;
 		Socket sock;
+		
+
 		//Boolean run = True;
 		ServerSocket servsock = new ServerSocket (port, q_len);
 		//ServerSocket servsockAdmin = new ServerSocket (portAdmin, q_len);
