@@ -7,11 +7,12 @@ public class JokeClient {
 		String serverName;
 		String userName = "";
 		boolean nameEntered = false;
+		int port = 8888;
 		
 		if (args.length < 1) serverName = "localhost";
 		else serverName = args[0];
 		System.out.println("JokeClient");
-		System.out.println("Using server: " + serverName + ", Port: 8888");
+		System.out.println("Using server: " + serverName + ", Port:" + port);
 		 BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		 try {
 		 String name;

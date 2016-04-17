@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.*;
 import java.util.Random;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.print.DocFlavor.STRING;
 
@@ -12,6 +14,11 @@ class JokeWorker extends Thread{
 	Socket sock;
 	JokeWorker (ServerSocket s){serverSock = s;}
 	boolean isRunning = false;
+	JokeProverbState jokeProverbState1 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState2 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState3 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState4 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState5 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
 	
 	//setup arrays of jokes, proverbs, and maintenance messages
 	String jokes[] = {"A Joke one here...HAHA", "B Why did the Chicken Cross the road...hahaha", "C Knock Knock, Who's There?", "D Joke 4", "E Joke5"};
@@ -20,7 +27,7 @@ class JokeWorker extends Thread{
 	//enum modes of the server
 	public enum Mode { JOKE, PROVERB, MAINTENANCE, SHUTDOWN}
 	String output = ""; //initialize output string
-	Mode mode = Mode.JOKE; //set defualt mode to JOKEMode
+	Mode mode = Mode.JOKE; //set default mode to JOKEMode
 
 
 	
@@ -95,7 +102,8 @@ class JokeWorker extends Thread{
 		// TODO Auto-generated method stub
 		Random randomNumberGenerator = new Random();
 		int randomInt = randomNumberGenerator.nextInt(4);
-		
+		jokeProverbState1.setJoke1(true);
+		jokeProverbState1.setName(name);
 		output = jokes[randomInt];
 		out.println( name+" "+ output);
 	}
@@ -166,6 +174,8 @@ static String toText(byte ip[] ) { //make portable for 128 bit format
 	// TODO Auto-generated method stub
 	return result.toString();
 }
+
+
 }
 
 public class JokeServer {
@@ -183,6 +193,8 @@ public class JokeServer {
 		AdminLooper AL = new AdminLooper();
 		Thread t = new Thread(AL);
 			t.start();
+			
+
 		
 		System.out.println("Lew Flauta's JokeServer Starting up ver 0.8, listening at port:" + port);
 		while (jokeWorker.listen()){ //run loop for the server
@@ -194,6 +206,10 @@ public class JokeServer {
 			//servsock.close();
 		}
 		jokeWorker.stopListening();
+	}
+	
+	public class JokeHashMap{
+		HashMap <String, Boolean> jokeProverbMap = new HashMap <String, Boolean>();
 	}
 	
 
@@ -437,6 +453,8 @@ public class JokeServer {
 		    }catch (IOException ioe) {System.out.println(ioe);}
 		 }
 	}
+	
+
 	
 
 
