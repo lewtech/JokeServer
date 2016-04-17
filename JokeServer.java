@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Map;
 import java.util.HashMap;
@@ -9,17 +10,16 @@ import javax.print.DocFlavor.STRING;
 import org.omg.CORBA.portable.UnknownException;
 
 class JokeWorker extends Thread{
-	private static final Boolean True = null;
 	ServerSocket serverSock;
 	Socket sock;
 	JokeWorker (ServerSocket s){serverSock = s;}
 	boolean isRunning = false;
 	
-	JokeProverbState jokeProverbState1 = new JokeProverbState("", false, false, false, false, false, false, false, false, false, false);
-	JokeProverbState jokeProverbState2 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
-	JokeProverbState jokeProverbState3 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
-	JokeProverbState jokeProverbState4 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
-	JokeProverbState jokeProverbState5 = new JokeProverbState(null, false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState1 = new JokeProverbState("nil", false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState2 = new JokeProverbState("nil", false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState3 = new JokeProverbState("nil", false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState4 = new JokeProverbState("nil", false, false, false, false, false, false, false, false, false, false);
+	JokeProverbState jokeProverbState5 = new JokeProverbState("nil", false, false, false, false, false, false, false, false, false, false);
 
 
 	
@@ -123,18 +123,47 @@ class JokeWorker extends Thread{
 	}
 	
 	private void sendJoke( PrintStream out, String name) {
+		
+
 		// TODO Auto-generated method stub
-		System.out.println(checkForState(name).toString());
-		Random randomNumberGenerator = new Random();
-		int randomInt = randomNumberGenerator.nextInt(4);
-		jokeProverbState1.setName(name);
-		System.out.println("joke1 " + jokeProverbState1.getJoke1());
-		System.out.println(jokeProverbState1.getName());
-		jokeProverbState1.setJoke1(true);
-		System.out.println("joke1 " + jokeProverbState1.getJoke1());
-		output = jokes[randomInt];
+		//System.out.println(checkForState(name).toString());
+		System.out.println(jokeProverbState1.getJoke1() + " " + jokeProverbState1.getJoke2() + " " + jokeProverbState1.getJoke3() + " " + jokeProverbState1.getJoke4() + " " + jokeProverbState1.getJoke5());
+		
+		//jokeProverbState1.setName(name);
+		//System.out.println("joke1 " + jokeProverbState1.getJoke1());
+		//System.out.println(jokeProverbState1.getName());
+		//jokeProverbState1.setJoke1(true);
+		int whichJokeInt = whichJoke();
+		while (whichJokeInt < 0)  {
+			whichJokeInt = whichJoke();
+			if (whichJokeInt > -1) break;
+		}
+		System.out.println("WhichJokeInt "+ whichJokeInt);
+		output = jokes[whichJokeInt];
 		out.println( name+" "+ output);
+		
 	}
+	
+	private int whichJoke(){
+		Random randomNumberGenerator = new Random();
+		int randomInt = randomNumberGenerator.nextInt(jokes.length-1);
+		System.out.println (randomInt);
+		System.out.println(jokeProverbState1.checkIfJokesComplete());
+		jokeProverbState1.clearJokesIfComplete();
+		if (randomInt==0 && jokeProverbState1.joke1 == false){jokeProverbState1.joke1=true; return 0;}
+		if (randomInt==0 && jokeProverbState1.joke1 == true){return -8;}
+		if (randomInt==1 && jokeProverbState1.joke2 == false){jokeProverbState1.joke2=true; return 1;}
+		if (randomInt==1 && jokeProverbState1.joke2 == true){return -1;}
+		if (randomInt==2 && jokeProverbState1.joke3 == false){jokeProverbState1.joke3=true; return 2;}
+		if (randomInt==2 && jokeProverbState1.joke3 == true){ return -2;}
+		if (randomInt==3 && jokeProverbState1.joke4 == false){jokeProverbState1.joke4=true; return 3;}
+		if (randomInt==3 && jokeProverbState1.joke4 == true){return -3;}
+		if (randomInt==4 && jokeProverbState1.joke5 == false){jokeProverbState1.joke5=true; return 4;}
+		if (randomInt==4 && jokeProverbState1.joke5 == true){return -4;}
+		
+		return -10;
+	}
+	
 	
 	private void sendMaintenance( PrintStream out, String name) {
 		// TODO Auto-generated method stub
@@ -249,7 +278,6 @@ public class JokeServer {
 
 
 	class AdminWorker extends Thread{
-		private static final Boolean True = null;
 		ServerSocket serverSock;
 		Socket sock;
 		AdminWorker (Socket s){sock = s;}

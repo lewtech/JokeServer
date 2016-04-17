@@ -80,6 +80,10 @@ public class JokeProverbState {
 		return (joke1 && joke2 && joke3 && joke4 && joke5 && true);
 	}
 	
+	public void clearJokesIfComplete()
+	{
+		if (checkIfJokesComplete()) {clearJokes();}
+	}
 	public boolean checkIfProverbsComplete(){
 		return (proverb1 && proverb2 && proverb3 && proverb4 && proverb5 && true);
 	}
